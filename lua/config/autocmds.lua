@@ -8,24 +8,24 @@ local autocmd = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
 local cl_var = "auto_cursorline"
 
-autocmd({ "WinEnter", "FocusGained" }, {
+autocmd({ "InsertLeave", "WinEnter", "FocusGained" }, {
   group = augroup("enable_auto_cursorline", { clear = true }),
   callback = function()
     local ok, cl = pcall(vim.api.nvim_win_get_var, 0, cl_var)
     if ok and cl then
       vim.api.nvim_win_del_var(0, cl_var)
-      vim.o.cursorline = true
+      vim.wo.cursorline = true
     end
   end,
 })
 
-autocmd({ "WinLeave", "FocusLost" }, {
+autocmd({ "InsertEnter", "WinLeave", "FocusLost" }, {
   group = augroup("disable_auto_cursorline", { clear = true }),
   callback = function()
-    local cl = vim.o.cursorline
+    local cl = vim.wo.cursorline
     if cl then
       vim.api.nvim_win_set_var(0, cl_var, cl)
-      vim.o.cursorline = false
+      vim.wo.cursorline = false
     end
   end,
 })
