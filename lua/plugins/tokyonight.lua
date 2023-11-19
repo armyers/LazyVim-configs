@@ -6,7 +6,8 @@ return {
     opts = {
       style = "night",
       dim_inactive = true,
-      on_highlights = function(hl, colors)
+      -- on_highlights = function(hl, colors)
+      on_highlights = function(hl)
         hl.CursorLine = {
           bg = "#333666",
           fg = "#bbbbbb",
