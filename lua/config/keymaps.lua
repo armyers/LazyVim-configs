@@ -4,7 +4,7 @@
 --
 local km_set = vim.keymap.set
 
-km_set("n", ";", ":")
+km_set("n", ";", ":", { desc = "Command mode" })
 km_set("n", "_", "<cmd>split<cr>", { desc = "Horizontal Split" })
 km_set("n", "|", "<cmd>vsplit<cr>", { desc = "Vertical Split" })
 km_set("n", "<A-h>", "<C-w><", { desc = "decrease window width" })
