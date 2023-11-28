@@ -8,5 +8,5 @@ vim.opt.tagcase = "match"
 vim.opt.mouse = ""
 -- disable the clipboard
 vim.opt.clipboard = ""
--- disable the clipboard
+-- enable line wrap
 vim.opt.wrap = true
