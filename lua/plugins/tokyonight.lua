@@ -11,7 +11,6 @@ return {
         hl.CursorLine = {
           bg = "#333666",
           fg = "#bbbbbb",
-          underline = true,
         }
         hl.NvimTreeCursorLine = {
           bg = "#333666",
@@ -21,6 +20,9 @@ return {
           fg = "#555555",
         }
         hl.NvimTreeWinSeparator = {
+          fg = "#555555",
+        }
+        hl.FloatBorder = {
           fg = "#555555",
         }
       end,

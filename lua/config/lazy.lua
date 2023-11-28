@@ -44,4 +44,8 @@ require("lazy").setup({
       },
     },
   },
+  ui = {
+    -- The border to use for the UI window. Accepts same border values as |nvim_open_win()|.
+    border = "single",
+  },
 })

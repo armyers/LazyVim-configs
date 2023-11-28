@@ -7,7 +7,6 @@ return {
         null_ls.builtins.formatting.terraform_fmt,
         null_ls.builtins.formatting.terrafmt, -- markdown
         null_ls.builtins.diagnostics.terraform_validate,
-        null_ls.builtins.completion.spell,
         null_ls.builtins.completion.tags,
         null_ls.builtins.formatting.stylua,
         null_ls.builtins.formatting.trim_whitespace,
@@ -18,6 +17,7 @@ return {
         null_ls.builtins.formatting.yapf,
         null_ls.builtins.code_actions.shellcheck,
         null_ls.builtins.diagnostics.shellcheck.with({ diagnostics_format = "" }),
+        -- null_ls.builtins.completion.spell,
       })
     end,
   },
