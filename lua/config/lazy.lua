@@ -34,9 +34,9 @@ require("lazy").setup({
       -- disable some rtp plugins
       disabled_plugins = {
         "gzip",
-        -- "matchit",
-        -- "matchparen",
-        -- "netrwPlugin",
+        "matchit",
+        "matchparen",
+        "netrwPlugin",
         "tarPlugin",
         "tohtml",
         "tutor",
@@ -45,7 +45,7 @@ require("lazy").setup({
     },
   },
   ui = {
-    -- The border to use for the UI window. Accepts same border values as |nvim_open_win()|.
+    -- The border to use for the Lazy UI window and all other floating windows. Accepts same border values as |nvim_open_win()|.
     border = "single",
   },
 })
