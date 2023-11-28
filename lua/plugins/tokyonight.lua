@@ -23,7 +23,7 @@ return {
           fg = "#555555",
         }
         hl.FloatBorder = {
-          fg = "#555555",
+          fg = "#777777",
         }
       end,
     },
