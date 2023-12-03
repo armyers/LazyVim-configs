@@ -1,0 +1,7 @@
+{
+  "l-module": {
+    "prefix": "l-tf-module",
+    "description": "(poc) local modules in Terraform are self-contained packages of Terraform configurations that are managed as a group.",
+    "body": ["module \"${myModuleName}\" {", "   source = \"\"", "}"]
+  }
+}
