@@ -18,5 +18,17 @@ return {
         })
       end
     end,
+    ---@param opts TSConfig
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+      local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+      parser_config.jinja2 = {
+        install_info = {
+          url = "~/code/armyers/tree-sitter-jinja2",
+          files = { "src/parser.c" },
+        },
+        filetype = "j2",
+      }
+    end,
   },
 }

@@ -13,7 +13,6 @@ return {
         marksman = {},
         pyright = {},
         docker_compose_language_service = {},
-        tflint = {},
         dockerls = {},
         gopls = {},
       },
