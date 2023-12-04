@@ -1,9 +1,7 @@
 return {
   {
     "neovim/nvim-lspconfig",
-    ---@class PluginLspOpts
     opts = {
-      ---@type lspconfig.options
       servers = {
         terraformls = {},
         tflint = {},
@@ -17,5 +15,8 @@ return {
         gopls = {},
       },
     },
+    config = function()
+      require("lspconfig.ui.windows").default_options.border = "single"
+    end,
   },
 }

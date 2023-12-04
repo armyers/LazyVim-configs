@@ -1,11 +1,12 @@
 return {
   "L3MON4D3/LuaSnip",
   dependencies = {
-    "rafamadriz/friendly-snippets",
-    -- "armyers/personal-snippets",
-    config = function()
-      require("luasnip.loaders.from_vscode").lazy_load()
-      require("luasnip.loaders.from_vscode").lazy_load({ paths = vim.fn.stdpath("config") .. "/local-snippets/" })
-    end,
+    {
+      "Katlean/local-snippets",
+      url = "git@github.com:Katlean/local-snippets.git",
+      config = function()
+        require("luasnip.loaders.from_vscode").lazy_load()
+      end,
+    },
   },
 }
