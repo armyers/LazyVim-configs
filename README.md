@@ -99,4 +99,4 @@ NVIM_APPNAME=armyers/LazyVim-configs/ nvim
 
 ### plugin-manager
 
-+ [folke/lazy.n
++ [folke/lazy.nvim](https://dotfyle.com/plugins/folke/lazy.nvim)
