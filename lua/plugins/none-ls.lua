@@ -5,7 +5,7 @@ return {
       local null_ls = require("null-ls")
       vim.list_extend(opts.sources, {
         null_ls.builtins.formatting.terraform_fmt,
-        null_ls.builtins.formatting.terrafmt, -- markdown
+        null_ls.builtins.formatting.terrafmt, -- for terraform injected in markdown
         null_ls.builtins.diagnostics.terraform_validate,
         null_ls.builtins.completion.tags,
         null_ls.builtins.formatting.stylua,
@@ -17,7 +17,9 @@ return {
         null_ls.builtins.formatting.yapf,
         null_ls.builtins.code_actions.shellcheck,
         null_ls.builtins.diagnostics.shellcheck.with({ diagnostics_format = "" }),
-        -- null_ls.builtins.completion.spell,
+        null_ls.builtins.formatting.shfmt.with({
+          extra_args = { "-i", "2", "-ci", "-sr", "-bn", "-fn" },
+        }),
       })
     end,
   },

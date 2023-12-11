@@ -10,3 +10,8 @@ vim.opt.mouse = ""
 vim.opt.clipboard = ""
 -- enable line wrap
 vim.opt.wrap = true
+
+-- tabs and shifting
+vim.opt.expandtab = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
