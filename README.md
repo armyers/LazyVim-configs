@@ -9,7 +9,6 @@ Refer to the [documentation](https://lazyvim.github.io/installation) to get star
 <a href="https://dotfyle.com/armyers/lazyvim-configs"><img src="https://dotfyle.com/armyers/lazyvim-configs/badges/leaderkey?style=flat" /></a>
 <a href="https://dotfyle.com/armyers/lazyvim-configs"><img src="https://dotfyle.com/armyers/lazyvim-configs/badges/plugin-manager?style=flat" /></a>
 
-
 ## Install Instructions
 
  > Install requires Neovim 0.9+. Always review the code before installing a configuration.
@@ -57,21 +56,27 @@ NVIM_APPNAME=armyers/LazyVim-configs/ nvim
 
 + [folke/tokyonight.nvim](https://dotfyle.com/plugins/folke/tokyonight.nvim)
 + [neanias/everforest-nvim](https://dotfyle.com/plugins/neanias/everforest-nvim)
+
 ### completion
 
 + [hrsh7th/nvim-cmp](https://dotfyle.com/plugins/hrsh7th/nvim-cmp)
+
 ### diagnostics
 
 + [folke/trouble.nvim](https://dotfyle.com/plugins/folke/trouble.nvim)
+
 ### file-explorer
 
 + [nvim-neo-tree/neo-tree.nvim](https://dotfyle.com/plugins/nvim-neo-tree/neo-tree.nvim)
+
 ### fuzzy-finder
 
 + [nvim-telescope/telescope.nvim](https://dotfyle.com/plugins/nvim-telescope/telescope.nvim)
+
 ### keybinding
 
 + [folke/which-key.nvim](https://dotfyle.com/plugins/folke/which-key.nvim)
+
 ### lsp
 
 + [simrat39/symbols-outline.nvim](https://dotfyle.com/plugins/simrat39/symbols-outline.nvim)
@@ -79,15 +84,19 @@ NVIM_APPNAME=armyers/LazyVim-configs/ nvim
 + [neovim/nvim-lspconfig](https://dotfyle.com/plugins/neovim/nvim-lspconfig)
 + [mfussenegger/nvim-lint](https://dotfyle.com/plugins/mfussenegger/nvim-lint)
 + [jose-elias-alvarez/typescript.nvim](https://dotfyle.com/plugins/jose-elias-alvarez/typescript.nvim)
+
 ### lsp-installer
 
 + [williamboman/mason.nvim](https://dotfyle.com/plugins/williamboman/mason.nvim)
+
 ### lua-colorscheme
 
 + [ellisonleao/gruvbox.nvim](https://dotfyle.com/plugins/ellisonleao/gruvbox.nvim)
+
 ### motion
 
 + [folke/flash.nvim](https://dotfyle.com/plugins/folke/flash.nvim)
+
 ### plugin-manager
 
 + [folke/lazy.n
