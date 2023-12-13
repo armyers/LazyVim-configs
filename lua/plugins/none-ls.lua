@@ -18,7 +18,7 @@ return {
         null_ls.builtins.code_actions.shellcheck,
         null_ls.builtins.diagnostics.shellcheck.with({ diagnostics_format = "" }),
         null_ls.builtins.formatting.shfmt.with({
-          extra_args = { "-i", "2", "-ci", "-sr", "-bn", "-fn" },
+          extra_args = { "-i", "2", "-ci", "-sr", "-bn", "-s" },
         }),
       })
     end,

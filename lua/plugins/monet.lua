@@ -1,4 +1,7 @@
 return {
-  "fynnfluegge/monet.nvim",
-  name = "monet",
+  {
+    "fynnfluegge/monet.nvim",
+    name = "monet",
+    event = { "VeryLazy" },
+  },
 }
