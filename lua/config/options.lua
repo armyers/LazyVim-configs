@@ -15,3 +15,10 @@ vim.opt.wrap = true
 vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
+
+-- increase the timeout between keystrokes so yss and ySS are useable
+-- (which-key sets this to 300)
+vim.opt.timeoutlen = 600
+
+-- enable EditorConfig!
+vim.g.editorconfig = true
