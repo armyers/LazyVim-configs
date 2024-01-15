@@ -12,3 +12,7 @@ km_set("n", "<A-l>", "<C-w>>", { desc = "increase window width" })
 km_set("n", "<A-k>", "<C-w>+", { desc = "increase window height" })
 km_set("n", "<A-j>", "<C-w>-", { desc = "decrease window height" })
 km_set("n", "<A-=>", "<C-w>=", { desc = "equalize window sizes" })
+
+-- disable lazygit
+vim.keymap.del("n", "<leader>gg")
+vim.keymap.del("n", "<leader>gG")
