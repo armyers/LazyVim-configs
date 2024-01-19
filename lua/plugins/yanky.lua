@@ -6,7 +6,10 @@ return {
       { "kkharji/sqlite.lua" },
     },
     opts = {
-      ring = { storage = "sqlite" },
+      ring = {
+        storage = "sqlite",
+        history_length = 1000,
+      },
     },
     keys = {
       {
