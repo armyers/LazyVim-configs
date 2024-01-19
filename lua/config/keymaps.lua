@@ -16,6 +16,7 @@ km_set("n", "<A-=>", "<C-w>=", { desc = "equalize window sizes" })
 km_set("n", "<A-\\>", "<C-w>|", { desc = "maximize width of current window" })
 -- mnemonic: <A--> is really <A-_>
 km_set("n", "<A-->", "<C-w>_", { desc = "maximize height of current window" })
+km_set("n", "<A-m>", "<C-w>_<C-w>|", { desc = "maximize width and height of current window" })
 
 -- disable lazygit
 vim.keymap.del("n", "<leader>gg")
