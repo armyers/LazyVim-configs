@@ -4,7 +4,7 @@ return {
     {
       -- HACK: disable this one since it doesn't include terraform in package.json
       "rafamadriz/friendly-snippets",
-      enabled = true,
+      enabled = false,
     },
     -- {
     --   -- HACK: just a fork of rafamadriz/friendly-snippets with terraform language enabled
