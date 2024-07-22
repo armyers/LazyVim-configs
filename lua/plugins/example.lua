@@ -222,6 +222,7 @@ return {
   -- then: setup supertab in cmp
   {
     "hrsh7th/nvim-cmp",
+    -- alksdjflksdflksd
     dependencies = {
       "hrsh7th/cmp-emoji",
     },

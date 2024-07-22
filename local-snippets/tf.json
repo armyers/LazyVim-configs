@@ -1,0 +1,1 @@
+{"common_data":{"prefix":"common_data","body":["module \"common_data\" {","  source = \"git@github.com:Katlean\/terraform-aws-modules\/\/common-data\"","  # source = \"..\/..\/..\/..\/terraform-aws-modules\/common-data\"","}"]}}

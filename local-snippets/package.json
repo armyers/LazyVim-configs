@@ -1,18 +1,1 @@
-{
-    "name": "local-snippets",
-    "engines": {
-        "vscode": "^1.11.0"
-    },
-    "contributes": {
-        "snippets": [
-            {
-                "language": "python",
-                "path": "./snippets/python.json"
-            },
-            {
-                "language": "terraform",
-                "path": "./snippets/terraform.json"
-            }
-        ]
-    }
-}
+{"contributes":{"snippets":[{"path":".\/snippets\/python.json","language":"python"},{"path":".\/snippets\/terraform.json","language":"terraform"},{"path":".\/terraform-vars.json","language":["terraform-vars"]},{"path":".\/dashboard.json","language":["dashboard"]},{"path":".\/tf.json","language":["tf"]}]},"name":"local-snippets","engines":{"vscode":"^1.11.0"}}

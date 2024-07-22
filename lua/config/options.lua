@@ -22,3 +22,6 @@ vim.opt.timeoutlen = 600
 
 -- enable EditorConfig!
 vim.g.editorconfig = true
+
+-- turn off nonels notifications for now
+-- vim.g.nonels_supress_issue58 = true

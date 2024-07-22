@@ -1,0 +1,1 @@
+{"backend-tfvars":{"body":["bucket = \"zestai-${1|123456,234567|}-${2:NAMESPACE}-${3:SERVICE}-terraform-${4:ENVIRONMENT}-${5:REGION_ABBREV}\"","key    = \"${6:STATE_PATH}.tfstate\"","region = \"${7:REGION}\""],"prefix":"backend-tfvars"}}

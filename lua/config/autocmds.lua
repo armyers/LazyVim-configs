@@ -14,7 +14,9 @@ autocmd({ "InsertLeave", "WinEnter", "FocusGained" }, {
     local ok, cl = pcall(vim.api.nvim_win_get_var, 0, cl_var)
     if ok and cl then
       vim.api.nvim_win_del_var(0, cl_var)
-      vim.wo.cursorline = true
+      if vim.bo.filetype ~= "neo-tree" then
+        vim.wo.cursorline = true
+      end
     end
   end,
 })
@@ -25,7 +27,18 @@ autocmd({ "InsertEnter", "WinLeave", "FocusLost" }, {
     local cl = vim.wo.cursorline
     if cl then
       vim.api.nvim_win_set_var(0, cl_var, cl)
-      vim.wo.cursorline = false
+      if vim.bo.filetype ~= "neo-tree" then
+        vim.wo.cursorline = false
+      end
     end
+  end,
+})
+
+-- set filetype for Jenkinsfile to groovy
+autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = { "Jenkinsfile*" },
+  group = augroup("jenkinsfile_filetyhpe", { clear = true }),
+  callback = function()
+    vim.bo.filetype = "groovy"
   end,
 })

@@ -15,7 +15,21 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "everforest",
+      colorscheme = "catppuccin-mocha",
     },
+  },
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    config = function()
+      require("catppuccin").setup({
+        custom_highlights = function()
+          return {
+            CursorLineNr = { fg = "Cyan" },
+            LineNr = { fg = "DarkGray" },
+          }
+        end,
+      })
+    end,
   },
 }

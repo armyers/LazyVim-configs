@@ -6,4 +6,9 @@ return {
   { import = "lazyvim.plugins.extras.lang.yaml" },
   -- add terraformls and schemastore packages, and setup treesitter
   { import = "lazyvim.plugins.extras.lang.terraform" },
+  -- outline some symbols
+  -- { import = "lazyvim.plugins.extras.editor.symbols-outline" },
+  -- { import = "lazyvim.plugins.extras.editor.aerial" },
+  -- add yanky
+  -- { import = "lazyvim.plugins.extras.coding.yanky" },
 }

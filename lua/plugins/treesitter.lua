@@ -12,6 +12,7 @@ return {
           "markdown_inline",
           "org",
           "ssh_config",
+          "groovy",
         })
       end
     end,

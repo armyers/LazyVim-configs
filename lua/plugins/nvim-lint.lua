@@ -6,6 +6,7 @@ return {
       linters_by_ft = {
         terraform = { "terraform_validate" },
         tf = { "terraform_validate" },
+        markdown = { args = { "--disable", "MD013", "--" } },
       },
     },
   },
