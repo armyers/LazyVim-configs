@@ -1,10 +1,12 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    dependencies = { "nvim-telescope/telescope.nvim" },
     opts = function(_, opts)
       if type(opts.ensure_installed) == "table" then
         vim.list_extend(opts.ensure_installed, {
           "hcl",
+          "terraform",
           "bash",
           "jq",
           "make",
@@ -21,7 +23,7 @@ return {
       require("nvim-treesitter.configs").setup(opts)
       require("telescope").load_extension("luasnip")
       local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-      ---@class parser_config
+      ---@diagnostic disable-next-line: inject-field
       parser_config.jinja2 = {
         install_info = {
           url = "~/code/armyers/tree-sitter-jinja2",
