@@ -11,4 +11,5 @@ return {
   -- { import = "lazyvim.plugins.extras.editor.aerial" },
   -- add yanky
   -- { import = "lazyvim.plugins.extras.coding.yanky" },
+  { import = "lazyvim.plugins.extras.editor.fzf" },
 }
