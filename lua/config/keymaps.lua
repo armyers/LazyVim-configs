@@ -34,3 +34,18 @@ end, { desc = "[P] Edit snippet" })
 km_set({ "n", "x" }, "<leader>Sa", function()
   require("scissors").addNewSnippet()
 end, { desc = "[P] Add new snippet" })
+
+-- When searching for stuff, search results show in the middle
+km_set("n", "n", "nzz", { desc = "[P] goto next match; move line to middle" })
+km_set("n", "N", "Nzz", { desc = "[P] goto prev match; move line to middle" })
+
+-- When jumping with ctrl+d and u the cursors stays in the middle
+km_set("n", "<C-d>", "<C-d>zz", { desc = "[P] page down; move to middle" })
+km_set("n", "<c-u>", "<c-u>zz", { desc = "[P] page up; move to middle" })
+
+-- use gh to move to the beginning of the line in normal mode
+-- use gl to move to the end of the line in normal mode
+km_set({ "n", "v" }, "gb", "^", { desc = "[P] Go to the beginning line" })
+km_set({ "n", "v" }, "gl", "$", { desc = "[P] go to the end of the line" })
+-- In visual mode, after going to the end of the line, come back 1 character
+km_set("v", "gl", "$h", { desc = "[P] Go to the end of the line" })
