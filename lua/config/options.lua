@@ -25,3 +25,7 @@ vim.g.editorconfig = true
 
 -- turn off nonels notifications for now
 -- vim.g.nonels_supress_issue58 = true
+
+-- enable spellcheck
+vim.opt.spelllang = "en_us"
+vim.opt.spell = true
