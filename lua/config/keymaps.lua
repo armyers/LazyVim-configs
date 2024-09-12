@@ -60,3 +60,6 @@ km_set("v", "gl", "$h", { desc = "[P] Go to the end of the line" })
 km_set({ "n", "v" }, "<leader>y", [["+y]], { desc = "[P] Yank to system clipboard" })
 
 km_set("n", "<leader>C", require("telescope").extensions.zoxide.list)
+
+-- mini.files
+km_set("n", "<leader>mf", ":lua MiniFiles.open()<CR>", { desc = "[P] Open MiniFiles (mini.files)" })
