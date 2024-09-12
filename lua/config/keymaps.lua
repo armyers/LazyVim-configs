@@ -63,3 +63,28 @@ km_set("n", "<leader>C", require("telescope").extensions.zoxide.list)
 
 -- mini.files
 km_set("n", "<leader>mf", ":lua MiniFiles.open()<CR>", { desc = "[P] Open MiniFiles (mini.files)" })
+
+-- display git log history for selected text lines
+vim.keymap.set("v", "<leader>gl", function()
+  local git_root = vim.fs.root(0, ".git")
+  if type(git_root) ~= "string" then
+    print("No git root found")
+    return
+  end
+
+  local dir = vim.uv.cwd()
+  if type(dir) == "nil" then
+    print("Nil cwd")
+    return
+  end
+  if dir:match(git_root) == "nil" then
+    print("Git root not in cwd")
+    return
+  end
+
+  local line1 = vim.fn.getpos("v")[2]
+  local line2 = vim.fn.getcurpos()[2]
+  local rooted_name = vim.fn.expand("%:p"):gsub(git_root .. "/", "", 1)
+  local range = "-L" .. line1 .. "," .. line2 .. ":" .. rooted_name
+  require("neogit").action("log", "log_current", { range, "--no-patch" })()
+end, { desc = "[P] Show git log history (neogit)" })
