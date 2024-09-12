@@ -42,3 +42,10 @@ autocmd({ "BufRead", "BufNewFile" }, {
     vim.bo.filetype = "groovy"
   end,
 })
+
+-- prevents some flickering when opening files
+autocmd({ "LspAttach" }, {
+  callback = function(args)
+    vim.bo[args.buf].formatexpr = nil
+  end,
+})
