@@ -6,13 +6,13 @@ local km_set = vim.keymap.set
 local km_del = vim.keymap.del
 
 -- km_set("n", ";", ":", { desc = "Command mode" })
-km_set("n", "_", "<cmd>split<cr>", { desc = "Horizontal Split" })
-km_set("n", "|", "<cmd>vsplit<cr>", { desc = "Vertical Split" })
-km_set("n", "<A-h>", "<C-w><", { desc = "decrease window width" })
-km_set("n", "<A-l>", "<C-w>>", { desc = "increase window width" })
-km_set("n", "<A-k>", "<C-w>+", { desc = "increase window height" })
-km_set("n", "<A-j>", "<C-w>-", { desc = "decrease window height" })
-km_set("n", "<A-=>", "<C-w>=", { desc = "equalize window sizes" })
+km_set("n", "_", "<cmd>split<cr>", { desc = "[P]Horizontal Split" })
+km_set("n", "|", "<cmd>vsplit<cr>", { desc = "[P]Vertical Split" })
+km_set("n", "<A-h>", "<C-w><", { desc = "[P]decrease window width" })
+km_set("n", "<A-l>", "<C-w>>", { desc = "[P]increase window width" })
+km_set("n", "<A-k>", "<C-w>+", { desc = "[P]increase window height" })
+km_set("n", "<A-j>", "<C-w>-", { desc = "[P]decrease window height" })
+km_set("n", "<A-=>", "<C-w>=", { desc = "[P]equalize window sizes" })
 -- mnemonic: <A-\\> is really <A-|>
 km_set("n", "<A-\\>", "<C-w>|", { desc = "maximize width of current window" })
 -- mnemonic: <A--> is really <A-_>
