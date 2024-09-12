@@ -58,3 +58,5 @@ km_set("v", "gl", "$h", { desc = "[P] Go to the end of the line" })
 -- Yanking with `"+y` copies text to both the unnamed register and system clipboard.
 -- The `"+` register represents the system clipboard.
 km_set({ "n", "v" }, "<leader>y", [["+y]], { desc = "[P] Yank to system clipboard" })
+
+km_set("n", "<leader>C", require("telescope").extensions.zoxide.list)
