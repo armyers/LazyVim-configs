@@ -49,3 +49,12 @@ km_set({ "n", "v" }, "gb", "^", { desc = "[P] Go to the beginning line" })
 km_set({ "n", "v" }, "gl", "$", { desc = "[P] go to the end of the line" })
 -- In visual mode, after going to the end of the line, come back 1 character
 km_set("v", "gl", "$h", { desc = "[P] Go to the end of the line" })
+
+-- yank selected text into system clipboard
+-- Vim/Neovim has two clipboards: unnamed register (default) and system clipboard.
+--
+-- Yanking with `y` goes to the unnamed register, accessible only within Vim.
+-- The system clipboard allows sharing data between Vim and other applications.
+-- Yanking with `"+y` copies text to both the unnamed register and system clipboard.
+-- The `"+` register represents the system clipboard.
+km_set({ "n", "v" }, "<leader>y", [["+y]], { desc = "[P] Yank to system clipboard" })
