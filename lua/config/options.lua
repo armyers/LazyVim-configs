@@ -29,3 +29,10 @@ vim.g.editorconfig = true
 -- enable spellcheck
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
+
+-- terraform template files
+vim.filetype.add({
+  extension = {
+    tftpl = "terraform",
+  },
+})
