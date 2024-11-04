@@ -17,6 +17,13 @@ return {
           "Jenkinsfile",
         },
       },
+      ruff = {
+        init_options = {
+          settings = {
+            configuration = "~/.config/ruff/config.toml",
+          },
+        },
+      },
     },
     -- setup = {
     -- require("lspconfig").groovyls.setup({}),

@@ -37,7 +37,7 @@ autocmd({ "InsertEnter", "WinLeave", "FocusLost" }, {
 -- set filetype for Jenkinsfile to groovy
 autocmd({ "BufRead", "BufNewFile" }, {
   pattern = { "Jenkinsfile*" },
-  group = augroup("jenkinsfile_filetyhpe", { clear = true }),
+  group = augroup("jenkinsfile_filetype", { clear = true }),
   callback = function()
     vim.bo.filetype = "groovy"
   end,

@@ -59,7 +59,7 @@ km_set("v", "gl", "$h", { desc = "[P] Go to the end of the line" })
 -- The `"+` register represents the system clipboard.
 km_set({ "n", "v" }, "<leader>y", [["+y]], { desc = "[P] Yank to system clipboard" })
 
-km_set("n", "<leader>C", require("telescope").extensions.zoxide.list)
+km_set("n", "<leader>C", require("telescope").extensions.zoxide.list, { desc = "[P] Change directory (zoxide)" })
 
 -- mini.files
 km_set("n", "<leader>mf", ":lua MiniFiles.open()<CR>", { desc = "[P] Open MiniFiles (mini.files)" })
@@ -88,3 +88,45 @@ vim.keymap.set("v", "<leader>gl", function()
   local range = "-L" .. line1 .. "," .. line2 .. ":" .. rooted_name
   require("neogit").action("log", "log_current", { range, "--no-patch" })()
 end, { desc = "[P] Show git log history (neogit)" })
+
+-- km_set("n", "<leader>k", ':lua require("kubectl").open()<cr>', { noremap = true, silent = true, desc = "[P] kubectl" })
+
+-- folds
+km_set("n", "z0", function()
+  vim.opt.foldlevel = 0
+end, { desc = "[P] foldlevel=0" })
+
+km_set("n", "z1", function()
+  vim.opt.foldlevel = 1
+end, { desc = "[P] foldlevel=1" })
+
+km_set("n", "z2", function()
+  vim.opt.foldlevel = 2
+end, { desc = "[P] foldlevel=2" })
+
+km_set("n", "z3", function()
+  vim.opt.foldlevel = 3
+end, { desc = "[P] foldlevel=3" })
+
+km_set("n", "z4", function()
+  vim.opt.foldlevel = 4
+end, { desc = "[P] foldlevel=4" })
+
+km_set("n", "z5", function()
+  vim.opt.foldlevel = 5
+end, { desc = "[P] foldlevel=5" })
+
+-- just to play with and use as a reference
+vim.keymap.set("n", "<leader>se", function()
+  local file_extension = vim.fn.input("File extension to search (e.g., *.js): ")
+  require("telescope.builtin").live_grep({
+    prompt_title = "Live Grep by File Type",
+    shorten_path = true,
+    additional_args = function()
+      return { "--glob", file_extension }
+    end,
+  })
+end, { desc = "[P] [S]earch by File [T]ype" })
+
+-- toggle showkeys
+km_set("n", "<leader>kt", "<cmd>ShowkeysToggle<CR>", { desc = "[P] ShowkeysToggle" })

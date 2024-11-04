@@ -12,9 +12,9 @@ vim.opt.clipboard = ""
 vim.opt.wrap = true
 
 -- tabs and shifting
-vim.opt.expandtab = true
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
+-- vim.opt.expandtab = true
+-- vim.opt.tabstop = 2
+-- vim.opt.shiftwidth = 2
 
 -- increase the timeout between keystrokes so yss and ySS are useable
 -- (which-key sets this to 300)

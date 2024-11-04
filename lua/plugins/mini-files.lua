@@ -3,8 +3,11 @@ return {
     "echasnovski/mini.files",
     enabled = true,
     version = "*",
-    config = function()
-      require("mini.files").setup({})
-    end,
+    opts = {
+      windows = {
+        width_focus = 50,
+        width_preview = 100,
+      },
+    },
   },
 }

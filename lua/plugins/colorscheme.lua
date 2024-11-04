@@ -23,10 +23,16 @@ return {
     name = "catppuccin",
     config = function()
       require("catppuccin").setup({
+        dim_inactive = {
+          enabled = true, -- dims the background color of inactive window
+          shade = "dark",
+          percentage = 5, -- percentage of the shade to apply to the inactive window
+        },
         custom_highlights = function()
           return {
             CursorLineNr = { fg = "Cyan" },
             LineNr = { fg = "DarkGray" },
+            CursorLine = { bg = "#334455" },
           }
         end,
       })
