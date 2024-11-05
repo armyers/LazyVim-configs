@@ -130,3 +130,6 @@ end, { desc = "[P] [S]earch by File [T]ype" })
 
 -- toggle showkeys
 km_set("n", "<leader>kt", "<cmd>ShowkeysToggle<CR>", { desc = "[P] ShowkeysToggle" })
+
+-- toggle zenmode
+km_set("n", "<leader>Z", '<cmd>lua require("zen-mode").toggle()<CR>', { desc = "[P] ZenMode toggle" })
