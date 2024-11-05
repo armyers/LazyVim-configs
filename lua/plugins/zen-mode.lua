@@ -1,10 +1,14 @@
 return {
-  "folke/which-key.nvim",
-  config = function()
-    require("which-key").setup({
+  {
+    "folke/zen-mode.nvim",
+    opts = {
       -- your configuration comes here
       -- or leave it empty to use the default settings
       -- refer to the configuration section below
-    })
-  end,
+      window = {
+        backdrop = 0.15,
+        width = 0.8,
+      },
+    },
+  },
 }
