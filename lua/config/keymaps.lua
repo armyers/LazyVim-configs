@@ -133,3 +133,6 @@ km_set("n", "<leader>kt", "<cmd>ShowkeysToggle<CR>", { desc = "[P] ShowkeysToggl
 
 -- toggle zenmode
 km_set("n", "<leader>Z", '<cmd>lua require("zen-mode").toggle()<CR>', { desc = "[P] ZenMode toggle" })
+
+-- you-are-here
+-- km_set("n", "<leader>hr", ":call you_are_here#Toggle()<CR>", { desc = "[P] You are here" })
