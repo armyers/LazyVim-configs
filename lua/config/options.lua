@@ -36,3 +36,5 @@ vim.filetype.add({
     tftpl = "terraform",
   },
 })
+
+vim.opt.cursorcolumn = true
