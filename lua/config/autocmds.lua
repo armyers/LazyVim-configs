@@ -8,15 +8,25 @@ local autocmd = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
 local cl_var = "auto_cursorline"
 
+local function get_color(group, attr)
+  return vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(group)), attr)
+end
+
+local dimmed_bg = get_color("NormalNC", "bg")
+local dimmed_fg = get_color("NormalNC", "fg")
+local not_dimmed_bg = get_color("Normal", "bg")
+local not_dimmed_fg = get_color("Normal", "fg")
+
 autocmd({ "InsertLeave", "WinEnter", "FocusGained" }, {
   group = augroup("enable_auto_cursorline", { clear = true }),
   callback = function()
     local ok, cl = pcall(vim.api.nvim_win_get_var, 0, cl_var)
     if ok and cl then
       vim.api.nvim_win_del_var(0, cl_var)
-      if vim.bo.filetype ~= "neo-tree" then
-        vim.wo.cursorline = true
-      end
+      vim.wo.cursorline = true
+      vim.wo.cursorcolumn = true
+      vim.api.nvim_set_hl(0, "Normal", { bg = not_dimmed_bg })
+      vim.api.nvim_set_hl(0, "Normal", { fg = not_dimmed_fg })
     end
   end,
 })
@@ -27,9 +37,10 @@ autocmd({ "InsertEnter", "WinLeave", "FocusLost" }, {
     local cl = vim.wo.cursorline
     if cl then
       vim.api.nvim_win_set_var(0, cl_var, cl)
-      if vim.bo.filetype ~= "neo-tree" then
-        vim.wo.cursorline = false
-      end
+      vim.wo.cursorline = false
+      vim.wo.cursorcolumn = false
+      vim.api.nvim_set_hl(0, "Normal", { bg = dimmed_bg })
+      vim.api.nvim_set_hl(0, "Normal", { fg = dimmed_fg })
     end
   end,
 })
