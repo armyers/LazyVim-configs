@@ -4,6 +4,8 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = function(_, opts)
       table.remove(opts.sections.lualine_c, 1)
+      -- table.remove(opts.sections.lualine_c, 2)
+      table.remove(opts.sections.lualine_c, 3)
       table.remove(opts.sections.lualine_c, #opts.sections.lualine_c)
       table.insert(opts.sections.lualine_c, {
         "filename",

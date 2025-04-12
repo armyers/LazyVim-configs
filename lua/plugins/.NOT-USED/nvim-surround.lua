@@ -1,7 +1,7 @@
 return {
   {
     "kylechui/nvim-surround",
-    enabled = true,
+    enabled = false, -- Set to true to enable this plugin
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
     event = "VeryLazy",
     config = function()

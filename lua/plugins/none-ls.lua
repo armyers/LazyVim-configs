@@ -34,10 +34,10 @@ return {
         null_ls.builtins.hover.dictionary,
         null_ls.builtins.diagnostics.npm_groovy_lint,
         null_ls.builtins.formatting.npm_groovy_lint,
-        null_ls.builtins.formatting.prettier.with({
-          extra_filetypes = { "markdown" },
-          extra_args = { "--parser", "markdown", "--prose-wrap", "always" },
-        }),
+        -- null_ls.builtins.formatting.prettier.with({
+        --   extra_filetypes = { "markdown" },
+        --   extra_args = { "--parser", "markdown", "--prose-wrap", "always" },
+        -- }),
       })
     end,
   },
