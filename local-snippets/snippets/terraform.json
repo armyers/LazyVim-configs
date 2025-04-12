@@ -1,1 +1,164 @@
-{"providers":{"body":["terraform {","  required_providers {","    aws = {","      source  = \"hashicorp\/aws\"","      version = \"~> ${1:3.61}\"","    }","  }","}","","provider \"aws\" {","  region = var.region","  default_tags {","    tags = local.common_tags","  }","}"],"prefix":"providers"},"labels":{"body":["###########################################################################","# default labels set on the provider in each stack's providers.tf","module \"label\" {","  source              = \"git@github.com:Katlean\/terraform-zestai-label.git?ref=v2.0.1-TF1-plus\"","  organization        = ${1:local.organization}","  namespace           = ${2:local.namespace}","  environment         = ${3:var.environment}","  billing_customer    = ${4:local.billing_customer}","  billing_group       = ${5:local.billing_group}","  service             = ${6:local.service}","  data_classification = ${7:local.data_classification}","}"],"prefix":"labels"},"locals":{"body":["####################################################################################","# common variables that can be defined as locals since they are the same for","# all resources in this stack","#","# NOTE: this code assumes you have included the common-data and zestai-label modules","locals {","  function    = \"${1:FUNCTION}\"","","  # for common tagging using the 'label' module and applied in the providers block","  # organization: zestai (always)","  organization        = \"zestai\"","  # namespace: the high level product category or team within zestai (eg, model-hosting, saas, data-engineering, ... )","  namespace           = \"${2:NAMESPACE}\"","  # service: the sub-project within the namespace (eg, mh-serverless, api-v6, zest-connect, backend-parser-service, mds, mh-eks, ...)","  service             = local.function","  # data_classification: \"public\", \"internal\", \"restricted\", \"highly-restricted\"","  data_classification = \"${3:DATA_CLASS}\"","  # billing_customer: zestai (always)","  billing_customer    = local.organization","  # billing_group: usually same as namespace","  billing_group       = local.namespace","","  common_tags = merge(","    module.label.tags.default,","    {","      environment = var.environment","      function    = local.function","      git_repo    = module.common_data.repo.name","      git_path    = module.common_data.repo.path","      git_url     = module.common_data.repo.url","    }","  )","}"],"prefix":"locals"},"mod-abbrev":{"body":["module \"abbrev\" {","  source = \"git@github.com:Katlean\/terraform-aws-modules.git\/\/aws_abbrev\"","  # source = \"..\/..\/terraform-aws-modules\/aws_abbrev\"","}"],"prefix":["abbrev","mod-abbrev"]},"blahblah":{"body":["","resource \"alkjsdflk\" {","","${1:zero}","","","${2:${1}}","","}"],"prefix":"blahblah"},"vpc_data":{"body":["module \"vpc_data\" {","  source = \"git@github.com:Katlean\/terraform-aws-modules\/\/common-infra\/data\/vpc\"","  # source = \"..\/..\/..\/..\/..\/terraform-aws-modules\/common-infra\/data\/vpc\"","  region          = var.region","  environment     = var.environment","  vpc_name_prefix = local.vpc_name_prefix","}"],"prefix":"vpc_data"},"waf_ipsets_data":{"body":["module \"waf_ipsets_data\" {","  source = \"git@github.com:Katlean\/terraform-aws-modules\/\/common-infra\/data\/waf-ipsets\"","  # source      = \"..\/..\/..\/..\/terraform-aws-modules\/common-infra\/data\/waf-ipsets\"","  environment = var.environment","}"],"prefix":"waf_ipsets_data"},"common_tags":{"prefix":"common_tags","body":["common_tags = merge(","  module.label.tags.default,","  {","    environment = var.environment","    function    = local.function","    git_repo    = module.common_data.repo.name","    git_path    = module.common_data.repo.path","    git_url     = module.common_data.repo.url","  }",")"]},"common-data":{"body":["module \"common_data\" {","  source = \"git@github.com:Katlean\/terraform-aws-modules\/\/common-data\"","  # source = \"..\/..\/..\/..\/terraform-aws-modules\/common-data\"","}"],"prefix":["common-data","mod-common-data"]},"data-vpc":{"body":["data \"aws_vpc\" \"${1:this}\" {","  tags = {","    Name = ${2:local.basename}","  }","}"],"prefix":["data-vpc","lookup-vpc"]}}
+{
+    "z-locals": {
+        "prefix": "z-locals",
+        "body": [
+            "####################################################################################",
+            "# common variables that can be defined as locals since they are the same for",
+            "# all resources in this stack",
+            "#",
+            "# NOTE: this code assumes you have included the common-data and zestai-label modules",
+            "locals {",
+            "  function    = \"${1:FUNCTION}\"",
+            "  basename    = \"${function}-${var.environment}\"",
+            "",
+            "  # for common tagging using the 'label' module and applied in the providers block",
+            "  # organization: zestai (always)",
+            "  organization        = \"zestai\"",
+            "",
+            "  # namespace: the high level product category or team within zestai (eg, model-hosting, saas, data-engineering, ... )",
+            "  namespace           = \"${2:NAMESPACE}\"",
+            "",
+            "  # service: the sub-project within the namespace (eg, mh-serverless, api-v6, zest-connect, backend-parser-service, mds, mh-eks, ...)",
+            "  service             = local.function",
+            "",
+            "  # data_classification: public, internal, restricted, highly-restricted",
+            "  data_classification = \"${3:DATA_CLASS}\"",
+            "",
+            "  # billing_customer: zestai (always)",
+            "  billing_customer    = local.organization",
+            "",
+            "  # billing_group: usually same as namespace",
+            "  billing_group       = local.namespace",
+            "",
+            "  common_tags = merge(",
+            "    module.label.tags.default,",
+            "    {",
+            "      environment = var.environment",
+            "      function    = local.function",
+            "      git_repo    = module.common_data.repo.name",
+            "      git_path    = module.common_data.repo.path",
+            "      git_url     = module.common_data.repo.url",
+            "    }",
+            "  )",
+            "}"
+        ]
+    },
+    "z-providers": {
+        "prefix": "z-providers",
+        "body": [
+            "terraform {",
+            "  required_version = \"${1:= 1.7.5}\"",
+            "",
+            "  required_providers {",
+            "    aws = {",
+            "      source  = \"hashicorp/aws\"",
+            "      version = \"> ${2:5.0}\"",
+            "    }",
+            "  }",
+            "}",
+            "",
+            "provider \"aws\" {",
+            "  region = var.region",
+            "  default_tags {",
+            "    tags = local.common_tags",
+            "  }",
+            "}"
+        ]
+    },
+    "z-waf-ipsets-data": {
+        "prefix": "z-waf-ipsets-data",
+        "body": [
+            "module \"waf_ipsets_data\" {",
+            "  source = \"git@github.com:Katlean/terraform-aws-modules//common-infra/data/waf-ipsets\"",
+            "  # source      = \"../../../../terraform-aws-modules/common-infra/data/waf-ipsets\"",
+            "  environment = var.environment",
+            "}"
+        ]
+    },
+    "z-module-abbrev": {
+        "prefix": [
+            "z-abbrev",
+            "z-module-abbrev"
+        ],
+        "body": [
+            "module \"abbrev\" {",
+            "  source = \"git@github.com:Katlean/terraform-aws-modules.git//aws_abbrev\"",
+            "  # source = \"../../terraform-aws-modules/aws_abbrev\"",
+            "}"
+        ]
+    },
+    "z-common-data": {
+        "prefix": [
+            "z-common-data",
+            "z-module-common-data"
+        ],
+        "body": [
+            "module \"common_data\" {",
+            "  source = \"git@github.com:Katlean/terraform-aws-modules//common-data\"",
+            "  # source = \"../../../../terraform-aws-modules/common-data\"",
+            "}"
+        ]
+    },
+    "z-common-tags": {
+        "prefix": [
+            "z-common-tags"
+        ],
+        "body": [
+            "common_tags = merge(",
+            "  module.label.tags.default,",
+            "  {",
+            "    environment = var.environment",
+            "    function    = local.function",
+            "    git_repo    = module.common_data.repo.name",
+            "    git_path    = module.common_data.repo.path",
+            "    git_url     = module.common_data.repo.url",
+            "  }",
+            ")"
+        ]
+    },
+    "z-data-vpc": {
+        "prefix": "z-data-vpc",
+        "body": [
+            "data \"aws_vpc\" \"${1:this}\" {",
+            "  tags = {",
+            "    Name = ${2:local.basename}",
+            "  }",
+            "}"
+        ]
+    },
+    "z-labels": {
+        "prefix": [
+            "z-labels",
+            "z-module-labels"
+        ],
+        "body": [
+            "###########################################################################",
+            "# default labels set on the provider in each stack's providers.tf",
+            "module \"label\" {",
+            "  source              = \"git@github.com:Katlean/terraform-zestai-label.git?ref=${1:v2.0.1-TF1-plus}\"",
+            "  organization        = ${1:local.organization}",
+            "  namespace           = ${2:local.namespace}",
+            "  environment         = ${3:var.environment}",
+            "  billing_customer    = ${4:local.billing_customer}",
+            "  billing_group       = ${5:local.billing_group}",
+            "  service             = ${6:local.service}",
+            "  data_classification = ${7:local.data_classification}",
+            "}"
+        ]
+    },
+    "z-vpc-data": {
+        "prefix": [
+            "z-vpc-data",
+            "z-module-vpc-data"
+        ],
+        "body": [
+            "module \"vpc_data\" {",
+            "  source = \"git@github.com:Katlean/terraform-aws-modules//common-infra/data/vpc\"",
+            "  # source = \"../../../../../terraform-aws-modules/common-infra/data/vpc\"",
+            "  region          = var.region",
+            "  environment     = var.environment",
+            "  vpc_name_prefix = local.vpc_name_prefix",
+            "}"
+        ]
+    }
+}
