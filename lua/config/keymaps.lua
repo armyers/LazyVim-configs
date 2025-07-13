@@ -140,12 +140,12 @@ vim.keymap.set("n", "<leader>jq", "<cmd>lua require('jqscratch').toggle()<CR>", 
 local function navigate_to_terraform_module()
   local line = vim.api.nvim_get_current_line()
   local git_url = line:match('source%s*=%s*"([^"]*)"')
-  
+
   if not git_url then
     print("No Terraform source URL found on current line")
     return
   end
-  
+
   -- Parse git URL: git@github.com:Katlean/<repo-name>[.git][//<path>][?ref=<tag>]
   local repo_name = git_url:match("git@github%.com:Katlean/([^//]+)")
   if repo_name then
@@ -154,53 +154,53 @@ local function navigate_to_terraform_module()
     print("Could not parse repository name from: " .. git_url)
     return
   end
-  
+
   -- Extract optional path after // and ref tag
   local module_path = git_url:match("//([^?]*)")
   local ref_tag = git_url:match("ref=([^&]*)")
-  
+
   -- Check if repo exists locally, clone if not
   local repo_path = vim.fn.expand("~/code/" .. repo_name)
   if vim.fn.isdirectory(repo_path) == 0 then
     print("Repository not found locally, cloning...")
-    
+
     -- Build clone URL
     local clone_url = "git@github.com:Katlean/" .. repo_name .. ".git"
-    
+
     -- Clone repository
     local clone_cmd = string.format("cd ~/code && git clone %s", clone_url)
     local result = vim.fn.system(clone_cmd)
-    
+
     if vim.v.shell_error ~= 0 then
       print("Failed to clone repository: " .. result)
       return
     end
-    
+
     print("Successfully cloned " .. repo_name)
   end
-  
+
   -- Check if we need to checkout a specific tag or ensure we're on default branch HEAD
   if ref_tag then
     -- Get current HEAD
     local head_cmd = string.format("cd %s && git rev-parse HEAD", repo_path)
     local current_head = vim.fn.system(head_cmd):gsub("%s+", "")
-    
+
     -- Get tag commit
     local tag_cmd = string.format("cd %s && git rev-parse %s", repo_path, ref_tag)
     local tag_commit = vim.fn.system(tag_cmd):gsub("%s+", "")
-    
+
     if vim.v.shell_error == 0 and current_head ~= tag_commit then
       print("Checking out tag: " .. ref_tag)
-      
+
       -- Checkout the tag
       local checkout_cmd = string.format("cd %s && git checkout %s", repo_path, ref_tag)
       local checkout_result = vim.fn.system(checkout_cmd)
-      
+
       if vim.v.shell_error ~= 0 then
         print("Failed to checkout tag: " .. checkout_result)
         return
       end
-      
+
       print("Successfully checked out " .. ref_tag)
     end
   else
@@ -208,11 +208,11 @@ local function navigate_to_terraform_module()
     -- Get current branch
     local current_branch_cmd = string.format("cd %s && git branch --show-current", repo_path)
     local current_branch = vim.fn.system(current_branch_cmd):gsub("%s+", "")
-    
+
     -- Get the default branch name (try cached first)
     local default_branch_cmd = string.format("cd %s && git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'", repo_path)
     local default_branch = vim.fn.system(default_branch_cmd):gsub("%s+", "")
-    
+
     if vim.v.shell_error ~= 0 or default_branch == "" then
       -- Fallback: check what branch we're on, assume it's the default if main/master
       if current_branch == "main" or current_branch == "master" then
@@ -221,20 +221,20 @@ local function navigate_to_terraform_module()
         default_branch = "main" -- final fallback
       end
     end
-    
+
     -- Only checkout if we're not on the default branch
     if current_branch ~= default_branch then
       local checkout_cmd = string.format("cd %s && git checkout %s", repo_path, default_branch)
       local checkout_result = vim.fn.system(checkout_cmd)
-      
+
       if vim.v.shell_error ~= 0 then
         print("Failed to checkout default branch " .. default_branch .. ": " .. checkout_result)
         return
       end
-      
+
       print("Checked out default branch: " .. default_branch)
     end
-    
+
     -- Optional: Only fetch/pull if repo is older than 1 hour (uncomment if desired)
     -- local stat_cmd = string.format("stat -f %%m %s/.git/FETCH_HEAD 2>/dev/null || echo 0", repo_path)
     -- local last_fetch = tonumber(vim.fn.system(stat_cmd):gsub("%s+", "")) or 0
@@ -247,13 +247,13 @@ local function navigate_to_terraform_module()
     --   print("Updated to latest " .. default_branch)
     -- end
   end
-  
+
   -- Build final path including module path
   local local_path = repo_path
   if module_path and module_path ~= "" then
     local_path = local_path .. "/" .. module_path
   end
-  
+
   -- Check if final directory exists and open it
   if vim.fn.isdirectory(local_path) == 1 then
     require("mini.files").open(local_path, true)
@@ -270,7 +270,7 @@ vim.keymap.set("n", "gf", function()
   if file_path == "" then
     return
   end
-  
+
   -- Try to resolve relative paths
   local full_path = vim.fn.resolve(file_path)
   if vim.fn.filereadable(full_path) == 0 and vim.fn.isdirectory(full_path) == 0 then
@@ -279,7 +279,7 @@ vim.keymap.set("n", "gf", function()
     full_path = current_file_dir .. "/" .. file_path
     full_path = vim.fn.resolve(full_path)
   end
-  
+
   if vim.fn.isdirectory(full_path) == 1 then
     require("mini.files").open(full_path, true)
   elseif vim.fn.filereadable(full_path) == 1 then
