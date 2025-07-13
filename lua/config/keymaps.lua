@@ -179,7 +179,7 @@ local function navigate_to_terraform_module()
     print("Successfully cloned " .. repo_name)
   end
   
-  -- Check if we need to checkout a specific tag
+  -- Check if we need to checkout a specific tag or ensure we're on default branch HEAD
   if ref_tag then
     -- Get current HEAD
     local head_cmd = string.format("cd %s && git rev-parse HEAD", repo_path)
@@ -202,6 +202,52 @@ local function navigate_to_terraform_module()
       end
       
       print("Successfully checked out " .. ref_tag)
+    end
+  else
+    -- No ref specified, ensure we're on HEAD of default branch
+    -- First, fetch latest changes
+    local fetch_cmd = string.format("cd %s && git fetch origin", repo_path)
+    vim.fn.system(fetch_cmd)
+    
+    -- Get the default branch name
+    local default_branch_cmd = string.format("cd %s && git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'", repo_path)
+    local default_branch = vim.fn.system(default_branch_cmd):gsub("%s+", "")
+    
+    if vim.v.shell_error ~= 0 or default_branch == "" then
+      -- Fallback to common default branch names
+      local branch_check_cmd = string.format("cd %s && git ls-remote --heads origin | grep -E 'refs/heads/(main|master)$' | head -1 | sed 's/.*refs\\/heads\\///'", repo_path)
+      default_branch = vim.fn.system(branch_check_cmd):gsub("%s+", "")
+      
+      if default_branch == "" then
+        default_branch = "main" -- final fallback
+      end
+    end
+    
+    -- Get current branch
+    local current_branch_cmd = string.format("cd %s && git branch --show-current", repo_path)
+    local current_branch = vim.fn.system(current_branch_cmd):gsub("%s+", "")
+    
+    -- Checkout and pull latest if not already on default branch or not up to date
+    if current_branch ~= default_branch then
+      local checkout_cmd = string.format("cd %s && git checkout %s", repo_path, default_branch)
+      local checkout_result = vim.fn.system(checkout_cmd)
+      
+      if vim.v.shell_error ~= 0 then
+        print("Failed to checkout default branch " .. default_branch .. ": " .. checkout_result)
+        return
+      end
+      
+      print("Checked out default branch: " .. default_branch)
+    end
+    
+    -- Pull latest changes
+    local pull_cmd = string.format("cd %s && git pull origin %s", repo_path, default_branch)
+    local pull_result = vim.fn.system(pull_cmd)
+    
+    if vim.v.shell_error ~= 0 then
+      print("Failed to pull latest changes: " .. pull_result)
+    else
+      print("Updated to latest " .. default_branch)
     end
   end
   
