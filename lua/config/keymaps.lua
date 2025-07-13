@@ -247,6 +247,16 @@ vim.keymap.set("n", "gf", function()
   end
 end, { desc = "[P] Go to file (use mini.files for directories)" })
 
+-- Override LazyVim's <leader>e and <leader>E to use mini.files instead of snacks explorer
+vim.keymap.set("n", "<leader>e", function()
+  require("mini.files").open(vim.uv.cwd(), true)
+end, { desc = "[P] Explorer mini.files (cwd)" })
+
+vim.keymap.set("n", "<leader>E", function()
+  local root = vim.fs.root(0, ".git") or vim.uv.cwd()
+  require("mini.files").open(root, true)
+end, { desc = "[P] Explorer mini.files (root dir)" })
+
 -- disable lazygit by setting its keymaps to nil
 vim.keymap.del("n", "<leader>gg", {})
 vim.keymap.del("n", "<leader>gG", {})
