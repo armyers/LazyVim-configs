@@ -221,6 +221,32 @@ end
 
 vim.keymap.set("n", "gm", navigate_to_terraform_module, { desc = "[P] Navigate to Terraform module (local)" })
 
+-- Custom gf to use mini.files for directories
+vim.keymap.set("n", "gf", function()
+  local file_path = vim.fn.expand("<cfile>")
+  if file_path == "" then
+    return
+  end
+  
+  -- Try to resolve relative paths
+  local full_path = vim.fn.resolve(file_path)
+  if vim.fn.filereadable(full_path) == 0 and vim.fn.isdirectory(full_path) == 0 then
+    -- Try relative to current file
+    local current_file_dir = vim.fn.expand("%:h")
+    full_path = current_file_dir .. "/" .. file_path
+    full_path = vim.fn.resolve(full_path)
+  end
+  
+  if vim.fn.isdirectory(full_path) == 1 then
+    require("mini.files").open(full_path, true)
+  elseif vim.fn.filereadable(full_path) == 1 then
+    vim.cmd("edit " .. full_path)
+  else
+    -- Fall back to default gf behavior
+    vim.cmd("normal! gf")
+  end
+end, { desc = "[P] Go to file (use mini.files for directories)" })
+
 -- disable lazygit by setting its keymaps to nil
 vim.keymap.del("n", "<leader>gg", {})
 vim.keymap.del("n", "<leader>gG", {})
