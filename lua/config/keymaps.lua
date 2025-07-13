@@ -158,17 +158,37 @@ local function navigate_to_terraform_module()
   -- Extract optional path after //
   local module_path = git_url:match("//([^?]*)")
   
-  -- Build local path
-  local local_path = vim.fn.expand("~/code/" .. repo_name)
+  -- Check if repo exists locally, clone if not
+  local repo_path = vim.fn.expand("~/code/" .. repo_name)
+  if vim.fn.isdirectory(repo_path) == 0 then
+    print("Repository not found locally, cloning...")
+    
+    -- Build clone URL
+    local clone_url = "git@github.com:Katlean/" .. repo_name .. ".git"
+    
+    -- Clone repository
+    local clone_cmd = string.format("cd ~/code && git clone %s", clone_url)
+    local result = vim.fn.system(clone_cmd)
+    
+    if vim.v.shell_error ~= 0 then
+      print("Failed to clone repository: " .. result)
+      return
+    end
+    
+    print("Successfully cloned " .. repo_name)
+  end
+  
+  -- Build final path including module path
+  local local_path = repo_path
   if module_path and module_path ~= "" then
     local_path = local_path .. "/" .. module_path
   end
   
-  -- Check if directory exists and open it
+  -- Check if final directory exists and open it
   if vim.fn.isdirectory(local_path) == 1 then
     require("mini.files").open(local_path, true)
   else
-    print("Local directory not found: " .. local_path)
+    print("Module path not found: " .. local_path)
   end
 end
 
