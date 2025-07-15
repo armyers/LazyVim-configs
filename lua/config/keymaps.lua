@@ -179,30 +179,29 @@ local function navigate_to_terraform_module()
     print("Successfully cloned " .. repo_name)
   end
 
-  -- Check if we need to checkout a specific tag or ensure we're on default branch HEAD
+  -- Check if we need to create a worktree for a specific tag or ensure we're on default branch HEAD
   if ref_tag then
-    -- Get current HEAD
-    local head_cmd = string.format("cd %s && git rev-parse HEAD", repo_path)
-    local current_head = vim.fn.system(head_cmd):gsub("%s+", "")
-
-    -- Get tag commit
-    local tag_cmd = string.format("cd %s && git rev-parse %s", repo_path, ref_tag)
-    local tag_commit = vim.fn.system(tag_cmd):gsub("%s+", "")
-
-    if vim.v.shell_error == 0 and current_head ~= tag_commit then
-      print("Checking out tag: " .. ref_tag)
-
-      -- Checkout the tag
-      local checkout_cmd = string.format("cd %s && git checkout %s", repo_path, ref_tag)
-      local checkout_result = vim.fn.system(checkout_cmd)
-
+    -- Create worktree path with format ~/code/<repo-name>-<ref-tag>
+    local worktree_path = vim.fn.expand("~/code/" .. repo_name .. "-" .. ref_tag)
+    
+    -- Check if worktree already exists
+    if vim.fn.isdirectory(worktree_path) == 0 then
+      print("Creating worktree for tag: " .. ref_tag)
+      
+      -- Create the worktree
+      local worktree_cmd = string.format("cd %s && git worktree add %s %s", repo_path, worktree_path, ref_tag)
+      local worktree_result = vim.fn.system(worktree_cmd)
+      
       if vim.v.shell_error ~= 0 then
-        print("Failed to checkout tag: " .. checkout_result)
+        print("Failed to create worktree: " .. worktree_result)
         return
       end
-
-      print("Successfully checked out " .. ref_tag)
+      
+      print("Successfully created worktree for " .. ref_tag)
     end
+    
+    -- Update repo_path to point to the worktree
+    repo_path = worktree_path
   else
     -- No ref specified, ensure we're on default branch (but only update occasionally)
     -- Get current branch
