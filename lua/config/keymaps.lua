@@ -45,6 +45,10 @@ vim.keymap.set("n", "<leader>G", function()
   require("snacks").picker.grep({ cwd = "~/code" })
 end, { desc = "[P] snacks picker grep ~/code" })
 
+vim.keymap.set("n", "<leader>fz", function()
+  require("snacks").picker.zoxide()
+end, { desc = "[P] snacks picker zoxide session" })
+
 vim.keymap.set("n", "<leader>fN", function()
   require("snacks").picker.files({ dirs = { "~/.config/nvim", "~/.local/share/nvim" } })
 end, { desc = "[P] snacks picker files ~/.config/nvim ~/.local/share/nvim" })
@@ -146,26 +150,39 @@ local function navigate_to_terraform_module()
     return
   end
 
-  -- Parse git URL: git@github.com:Katlean/<repo-name>[.git][//<path>][?ref=<tag>]
-  local repo_name = git_url:match("git@github%.com:Katlean/([^//]+)")
-  if repo_name then
-    repo_name = repo_name:gsub("%.git$", "")  -- Remove .git suffix if present
-  else
+  local repo_name, module_path, ref_tag, clone_url, is_katlean
+
+  -- Parse SSH URL: git@github.com:Katlean/<repo-name>[.git][//<path>][?ref=<tag>]
+  if git_url:match("^git@github%.com:Katlean/") then
+    repo_name = git_url:match("git@github%.com:Katlean/([^//]+)")
+    if repo_name then
+      repo_name = repo_name:gsub("%.git$", "") -- Remove .git suffix if present
+      module_path = git_url:match("//([^?]*)")
+      ref_tag = git_url:match("ref=([^&]*)")
+      clone_url = "git@github.com:Katlean/" .. repo_name .. ".git"
+      is_katlean = true
+    end
+  -- Parse public GitHub URL: github.com/<org>/<repo>[/<path>][?ref=<tag>]
+  elseif git_url:match("^github%.com/") then
+    local org, repo = git_url:match("github%.com/([^/]+)/([^/?]+)")
+    if org and repo then
+      repo_name = repo -- Use just the repo name for local directory (git clone default)
+      module_path = git_url:match("github%.com/[^/]+/[^/?]+/([^?]*)")
+      ref_tag = git_url:match("ref=([^&]*)")
+      clone_url = "https://github.com/" .. org .. "/" .. repo .. ".git"
+      is_katlean = false
+    end
+  end
+
+  if not repo_name then
     print("Could not parse repository name from: " .. git_url)
     return
   end
-
-  -- Extract optional path after // and ref tag
-  local module_path = git_url:match("//([^?]*)")
-  local ref_tag = git_url:match("ref=([^&]*)")
 
   -- Check if repo exists locally, clone if not
   local repo_path = vim.fn.expand("~/code/" .. repo_name)
   if vim.fn.isdirectory(repo_path) == 0 then
     print("Repository not found locally, cloning...")
-
-    -- Build clone URL
-    local clone_url = "git@github.com:Katlean/" .. repo_name .. ".git"
 
     -- Clone repository
     local clone_cmd = string.format("cd ~/code && git clone %s", clone_url)
@@ -177,29 +194,74 @@ local function navigate_to_terraform_module()
     end
 
     print("Successfully cloned " .. repo_name)
+  else
+    -- Repository exists, update it if it's a Katlean repo or if no ref is specified
+    if is_katlean or not ref_tag then
+      -- Get current branch
+      local current_branch_cmd = string.format("cd %s && git branch --show-current", repo_path)
+      local current_branch = vim.fn.system(current_branch_cmd):gsub("%s+", "")
+
+      -- Get the default branch name
+      local default_branch_cmd = string.format(
+        "cd %s && git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'",
+        repo_path
+      )
+      local default_branch = vim.fn.system(default_branch_cmd):gsub("%s+", "")
+
+      if vim.v.shell_error ~= 0 or default_branch == "" then
+        -- Fallback: assume main if we can't determine
+        if current_branch == "main" or current_branch == "master" then
+          default_branch = current_branch
+        else
+          default_branch = "main"
+        end
+      end
+
+      -- Checkout default branch if not already on it
+      if current_branch ~= default_branch then
+        local checkout_cmd = string.format("cd %s && git checkout %s", repo_path, default_branch)
+        local checkout_result = vim.fn.system(checkout_cmd)
+
+        if vim.v.shell_error ~= 0 then
+          print("Failed to checkout default branch " .. default_branch .. ": " .. checkout_result)
+          return
+        end
+      end
+
+      -- Pull latest changes
+      local pull_cmd = string.format("cd %s && git pull origin %s", repo_path, default_branch)
+      local pull_result = vim.fn.system(pull_cmd)
+
+      if vim.v.shell_error ~= 0 then
+        print("Failed to pull latest changes: " .. pull_result)
+        return
+      end
+
+      print("Updated " .. repo_name .. " to latest " .. default_branch)
+    end
   end
 
   -- Check if we need to create a worktree for a specific tag or ensure we're on default branch HEAD
   if ref_tag then
     -- Create worktree path with format ~/code/<repo-name>-<ref-tag>
     local worktree_path = vim.fn.expand("~/code/" .. repo_name .. "-" .. ref_tag)
-    
+
     -- Check if worktree already exists
     if vim.fn.isdirectory(worktree_path) == 0 then
       print("Creating worktree for tag: " .. ref_tag)
-      
+
       -- Create the worktree
       local worktree_cmd = string.format("cd %s && git worktree add %s %s", repo_path, worktree_path, ref_tag)
       local worktree_result = vim.fn.system(worktree_cmd)
-      
+
       if vim.v.shell_error ~= 0 then
         print("Failed to create worktree: " .. worktree_result)
         return
       end
-      
+
       print("Successfully created worktree for " .. ref_tag)
     end
-    
+
     -- Update repo_path to point to the worktree
     repo_path = worktree_path
   else
@@ -209,7 +271,10 @@ local function navigate_to_terraform_module()
     local current_branch = vim.fn.system(current_branch_cmd):gsub("%s+", "")
 
     -- Get the default branch name (try cached first)
-    local default_branch_cmd = string.format("cd %s && git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'", repo_path)
+    local default_branch_cmd = string.format(
+      "cd %s && git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'",
+      repo_path
+    )
     local default_branch = vim.fn.system(default_branch_cmd):gsub("%s+", "")
 
     if vim.v.shell_error ~= 0 or default_branch == "" then
