@@ -138,6 +138,16 @@ vim.keymap.set(
 
 vim.keymap.set({ "n", "x" }, "<leader>aa", "<cmd>CopilotChat<CR>", { desc = "[P] CopilotChat toggle" })
 
+-- vim.keymap.set(
+--   { "n", "x" },
+--   "<leader>aa",
+--   "<cmd>CodeCompanionChat Toggle<CR>",
+--   { desc = "[P] CodeCompanionChat toggle" }
+-- )
+-- vim.keymap.set({ "n", "x" }, "<leader>ai", "<cmd>CodeCompanion<CR>", { desc = "[P] CodeCompanion inline" })
+
+vim.keymap.set("n", "<leader>do", "<cmd>lua MiniDiff.toggle_overlay()<CR>", { desc = "[P] mini-diff overlay toggle" })
+
 vim.keymap.set("n", "<leader>jq", "<cmd>lua require('jqscratch').toggle()<CR>", { desc = "[P] jqscratch toggle" })
 
 -- Terraform module navigation
@@ -154,7 +164,7 @@ local function navigate_to_terraform_module()
 
   -- Parse SSH URL: git@github.com:Katlean/<repo-name>[.git][//<path>][?ref=<tag>]
   if git_url:match("^git@github%.com:Katlean/") then
-    repo_name = git_url:match("git@github%.com:Katlean/([^//]+)")
+    repo_name = git_url:match("git@github%.com:Katlean/([^//?]+)")
     if repo_name then
       repo_name = repo_name:gsub("%.git$", "") -- Remove .git suffix if present
       module_path = git_url:match("//([^?]*)")
@@ -326,7 +336,7 @@ local function navigate_to_terraform_module()
   end
 end
 
-vim.keymap.set("n", "gm", navigate_to_terraform_module, { desc = "[P] Navigate to Terraform module (local)" })
+vim.keymap.set("n", "<leader>gm", navigate_to_terraform_module, { desc = "[P] Navigate to Terraform module (local)" })
 
 -- Custom gf to use mini.files for directories
 vim.keymap.set("n", "gf", function()

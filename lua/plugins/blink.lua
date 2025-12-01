@@ -1,6 +1,14 @@
 return {
   {
+    "giuxtaposition/blink-cmp-copilot",
+    enabled = false,
+  },
+  {
     "saghen/blink.cmp",
+    dependencies = {
+      "fang2hou/blink-copilot",
+      "joelazar/blink-calc",
+    },
     -- optional: provides snippets for the snippet source
     -- dependencies = { "rafamadriz/friendly-snippets" },
 
@@ -26,7 +34,15 @@ return {
       -- C-k: Toggle signature help (if signature.enabled = true)
       --
       -- See :h blink-cmp-config-keymap for defining your own keymap
-      keymap = { preset = "default" },
+      keymap = {
+        preset = "default",
+        -- change from C-space since that's my leader for terminal multiplexering
+        ["<C-s>"] = {
+          function(cmp)
+            cmp.show()
+          end,
+        },
+      },
       appearance = {
         -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
         -- Adjusts spacing to ensure icons are aligned
@@ -54,7 +70,23 @@ return {
       -- Default list of enabled providers defined so that you can extend it
       -- elsewhere in your config, without redefining it, due to `opts_extend`
       sources = {
-        default = { "lsp", "path", "snippets", "buffer" },
+        default = { "lsp", "path", "snippets", "buffer", "calc" },
+        providers = {
+          copilot = {
+            module = "blink-copilot",
+          },
+          calc = {
+            name = "Calc",
+            module = "blink-calc",
+          },
+        },
+        -- providers = {
+        --   path = {
+        --     enabled = function()
+        --       return vim.bo.filetype ~= "copilot-chat"
+        --     end,
+        --   },
+        -- },
       },
       -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
       -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,

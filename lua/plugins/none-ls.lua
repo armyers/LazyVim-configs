@@ -11,6 +11,12 @@ return {
     },
     opts = function(_, opts)
       local null_ls = require("null-ls")
+      -- Remove LazyVim's default shfmt to avoid conflicts
+      opts.sources = opts.sources or {}
+      opts.sources = vim.tbl_filter(function(source)
+        return source ~= null_ls.builtins.formatting.shfmt
+      end, opts.sources)
+      
       vim.list_extend(opts.sources, {
         null_ls.builtins.completion.tags,
         null_ls.builtins.diagnostics.checkmake,
@@ -25,7 +31,7 @@ return {
           extra_args = { "--indent", "4" },
         }),
         null_ls.builtins.formatting.shfmt.with({
-          extra_args = { "-i", "2", "-ci", "-sr", "-bn", "-s" },
+          extra_args = { "-i", "2", "-ci", "-bn", "-s", "-sr" },
         }),
         null_ls.builtins.formatting.stylua,
         null_ls.builtins.formatting.terraform_fmt,

@@ -1,7 +1,7 @@
 return {
   {
     "NeogitOrg/neogit",
-    enabled = true,
+    enabled = false,
     config = function()
       require("neogit").setup({})
     end,

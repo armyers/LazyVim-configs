@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Neovim Configuration Architecture
 
-This is a **LazyVim-based configuration** using `lazy.nvim` as the plugin manager. The config follows a modular structure with plugins organized in separate files.
+This is a **LazyVim distribution** (by folke) using `lazy.nvim` as the plugin manager. The config follows a modular structure with plugins organized in separate files.
 
 ### Core Structure
 - `init.lua` - Entry point that loads `config.lazy`
@@ -30,6 +30,8 @@ return {
 **Disabled plugins** are kept with `enabled = false` rather than deleted.
 
 **Local plugins** use `dir = "~/code/armyers/plugin-name"` format.
+
+**Plugin GitHub URLs**: Plugin specs with "username/repository" format refer to GitHub repos at `https://github.com/username/repository`.
 
 ### Key Configuration Conventions
 
@@ -82,6 +84,10 @@ return {
 - `fd` - Fast file finder
 - `ripgrep` - Text search
 - Language servers installed via Mason
+
+**Nvim Data Directories**:
+- `~/.local/share/nvim/` - Plugin downloads, lazy.nvim cache
+- `~/.local/state/nvim/` - State files, logs, session data
 
 **Git Integration**:
 - Neogit (currently disabled)

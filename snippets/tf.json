@@ -4,6 +4,7 @@
         "body": [
             "module \"common_data\" {",
             "  source = \"git@github.com:Katlean/terraform-aws-modules//common-data\"",
+            "  # NOTE: this is here for local testing/debugging the module",
             "  # source = \"../../../../terraform-aws-modules/common-data\"",
             "}"
         ]

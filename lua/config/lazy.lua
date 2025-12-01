@@ -18,10 +18,12 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.json" },
     { import = "lazyvim.plugins.extras.lang.markdown" },
     { import = "lazyvim.plugins.extras.lang.python" },
+    { import = "lazyvim.plugins.extras.lang.rust" },
     { import = "lazyvim.plugins.extras.lang.terraform" },
     { import = "lazyvim.plugins.extras.lang.typescript" },
     { import = "lazyvim.plugins.extras.lang.yaml" },
     { import = "lazyvim.plugins.extras.lsp.none-ls" },
+    -- this loads all plugins from lua/plugins; this should be last in the spec list
     { import = "plugins" },
   },
   defaults = {
@@ -33,15 +35,16 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  install = {
-    colorscheme = {
-      "tokyonight",
-      "habamax",
-      "vague",
-      "shadow",
-      "catppuccin",
-    },
-  },
+  -- just in case I need to change colorschemes
+  -- install = {
+  --   colorscheme = {
+  --     "tokyonight",
+  --     "habamax",
+  --     "vague",
+  --     "shadow",
+  --     "catppuccin",
+  --   },
+  -- },
   checker = { enabled = true }, -- automatically check for plugin updates
   performance = {
     rtp = {

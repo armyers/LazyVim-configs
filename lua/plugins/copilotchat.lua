@@ -9,12 +9,7 @@ return {
     },
     build = "make tiktoken", -- Only on MacOS or Linux
     opts = {
-      model = "claude-3.5-sonnet",
-      sticky = {
-        "#buffers",
-        "#files",
-        "#filenames",
-      },
+      model = "gemini-2.5-pro",
       mappings = {
         -- Use tab for completion
         complete = {

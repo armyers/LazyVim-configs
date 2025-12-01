@@ -37,4 +37,28 @@ vim.filetype.add({
   },
 })
 
+-- terraform tfvars files
+vim.filetype.add({
+  extension = {
+    tfvars = "terraform-vars",
+  },
+})
+
 vim.opt.cursorcolumn = true
+
+vim.diagnostic.config({ virtual_text = true })
+
+function Fd(file_pattern, _)
+  -- if first char is * then fuzzy search
+  if file_pattern:sub(1, 1) == "*" then
+    file_pattern = file_pattern:gsub(".", ".*%0") .. ".*"
+  end
+  local cmd = 'fd  --color=never --full-path --type file --hidden --exclude=".git" --exclude="deps" "'
+    .. file_pattern
+    .. '"'
+  local result = vim.fn.systemlist(cmd)
+  return result
+end
+
+vim.opt.findfunc = "v:lua.Fd"
+vim.keymap.set("n", "<leader>fd", ":find ", { desc = "raw-dog: Project Files" })

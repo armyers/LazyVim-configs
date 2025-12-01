@@ -1,6 +1,6 @@
 return {
   {
-    "echasnovski/mini.extra",
+    "nvim-mini/mini.extra",
     enabled = true,
     version = false,
   },

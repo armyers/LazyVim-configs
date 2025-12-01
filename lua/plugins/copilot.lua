@@ -4,7 +4,7 @@ return {
     enabled = true,
     config = function()
       require("copilot").setup({
-        copilot_model = "claude-3.5-sonnet",
+        copilot_model = "gemini-2.5-pro",
       })
     end,
   },

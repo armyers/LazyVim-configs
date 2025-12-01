@@ -4,6 +4,9 @@ return {
     enabled = true,
     opts = {
       format = { timeout_ms = 10000 },
+      codelens = {
+        enabled = true,
+      },
     },
     servers = {
       groovyls = {
@@ -24,7 +27,29 @@ return {
           },
         },
       },
+      terraformls = {
+        command = {
+          "terraform-ls",
+          "serve",
+        },
+        filetypes = {
+          "tf",
+          "tfvars",
+          "terraform",
+        },
+      },
     },
+    -- config = function()
+    --   -- Set up Terraform LSP
+    --   require("lspconfig").terraformls.setup({
+    --     filetypes = { "terraform", "tf", "tfvars" },
+    --     init_options = {
+    --       experimentalFeatures = {
+    --         prefillRequiredFields = true,
+    --       },
+    --     },
+    --   })
+    -- end,
     -- setup = {
     -- require("lspconfig").groovyls.setup({}),
     -- },
