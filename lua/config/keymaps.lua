@@ -160,7 +160,7 @@ local function navigate_to_terraform_module()
     return
   end
 
-  local repo_name, module_path, ref_tag, clone_url, is_katlean
+  local repo_name, module_path, ref_tag, clone_url, is_katlean, org
 
   -- Parse SSH URL: git@github.com:Katlean/<repo-name>[.git][//<path>][?ref=<tag>]
   if git_url:match("^git@github%.com:Katlean/") then
@@ -171,15 +171,15 @@ local function navigate_to_terraform_module()
       ref_tag = git_url:match("ref=([^&]*)")
       clone_url = "git@github.com:Katlean/" .. repo_name .. ".git"
       is_katlean = true
+      org = "Katlean"
     end
   -- Parse public GitHub URL: github.com/<org>/<repo>[/<path>][?ref=<tag>]
   elseif git_url:match("^github%.com/") then
-    local org, repo = git_url:match("github%.com/([^/]+)/([^/?]+)")
-    if org and repo then
-      repo_name = repo -- Use just the repo name for local directory (git clone default)
+    org, repo_name = git_url:match("github%.com/([^/]+)/([^/?]+)")
+    if org and repo_name then
       module_path = git_url:match("github%.com/[^/]+/[^/?]+/([^?]*)")
       ref_tag = git_url:match("ref=([^&]*)")
-      clone_url = "https://github.com/" .. org .. "/" .. repo .. ".git"
+      clone_url = "https://github.com/" .. org .. "/" .. repo_name .. ".git"
       is_katlean = false
     end
   end
@@ -189,79 +189,171 @@ local function navigate_to_terraform_module()
     return
   end
 
-  -- Check if repo exists locally, clone if not
-  local repo_path = vim.fn.expand("~/code/" .. repo_name)
-  if vim.fn.isdirectory(repo_path) == 0 then
-    print("Repository not found locally, cloning...")
+  local base_repo_path = vim.fn.expand("~/code/" .. repo_name)
+  local is_worktree_structure = false
+  local default_branch = nil
 
-    -- Clone repository
-    local clone_cmd = string.format("cd ~/code && git clone %s", clone_url)
-    local result = vim.fn.system(clone_cmd)
+  -- Check if this is a worktree structure (no .git in base directory)
+  if vim.fn.isdirectory(base_repo_path) == 1 and vim.fn.isdirectory(base_repo_path .. "/.git") == 0 then
+    is_worktree_structure = true
 
-    if vim.v.shell_error ~= 0 then
-      print("Failed to clone repository: " .. result)
-      return
+    -- Get default branch from remote
+    local remote_cmd = string.format("git ls-remote --symref %s HEAD", clone_url)
+    local remote_result = vim.fn.system(remote_cmd)
+
+    if vim.v.shell_error == 0 then
+      default_branch = remote_result:match("ref: refs/heads/([^\t\n]*)")
     end
 
-    print("Successfully cloned " .. repo_name)
-  else
-    -- Repository exists, update it if it's a Katlean repo or if no ref is specified
-    if is_katlean or not ref_tag then
-      -- Get current branch
-      local current_branch_cmd = string.format("cd %s && git branch --show-current", repo_path)
-      local current_branch = vim.fn.system(current_branch_cmd):gsub("%s+", "")
-
-      -- Get the default branch name
-      local default_branch_cmd = string.format(
-        "cd %s && git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'",
-        repo_path
-      )
-      local default_branch = vim.fn.system(default_branch_cmd):gsub("%s+", "")
-
-      if vim.v.shell_error ~= 0 or default_branch == "" then
-        -- Fallback: assume main if we can't determine
-        if current_branch == "main" or current_branch == "master" then
-          default_branch = current_branch
-        else
-          default_branch = "main"
-        end
+    -- Fallback if we can't get remote default branch
+    if not default_branch then
+      -- Check what directories exist in the repo structure
+      local glob_cmd = string.format("ls %s", base_repo_path)
+      local ls_result = vim.fn.system(glob_cmd)
+      if ls_result:match("main") then
+        default_branch = "main"
+      elseif ls_result:match("master") then
+        default_branch = "master"
+      else
+        default_branch = "main" -- final fallback
       end
+    end
+  end
 
-      -- Checkout default branch if not already on it
-      if current_branch ~= default_branch then
-        local checkout_cmd = string.format("cd %s && git checkout %s", repo_path, default_branch)
-        local checkout_result = vim.fn.system(checkout_cmd)
+  -- Determine the actual repo path
+  local repo_path
+  if is_worktree_structure then
+    repo_path = base_repo_path .. "/" .. default_branch
+
+    -- If default branch directory doesn't exist, we need to set up the worktree structure
+    if vim.fn.isdirectory(repo_path) == 0 then
+      if vim.fn.isdirectory(base_repo_path) == 0 then
+        -- Create base directory and clone as bare repo
+        local mkdir_cmd = string.format("mkdir -p %s", base_repo_path)
+        vim.fn.system(mkdir_cmd)
+
+        local clone_cmd = string.format("cd %s && git clone --bare %s .git", base_repo_path, clone_url)
+        local result = vim.fn.system(clone_cmd)
 
         if vim.v.shell_error ~= 0 then
-          print("Failed to checkout default branch " .. default_branch .. ": " .. checkout_result)
+          print("Failed to clone repository: " .. result)
           return
         end
       end
 
-      -- Pull latest changes
-      local pull_cmd = string.format("cd %s && git pull origin %s", repo_path, default_branch)
-      local pull_result = vim.fn.system(pull_cmd)
+      -- Create worktree for default branch
+      local worktree_cmd =
+        string.format("cd %s && git worktree add %s %s", base_repo_path, default_branch, default_branch)
+      local worktree_result = vim.fn.system(worktree_cmd)
 
       if vim.v.shell_error ~= 0 then
-        print("Failed to pull latest changes: " .. pull_result)
+        print("Failed to create default branch worktree: " .. worktree_result)
         return
       end
 
-      print("Updated " .. repo_name .. " to latest " .. default_branch)
+      print("Successfully created worktree for " .. default_branch)
+    else
+      -- Update existing default branch worktree
+      if is_katlean or not ref_tag then
+        local pull_cmd = string.format("cd %s && git pull origin %s", repo_path, default_branch)
+        local pull_result = vim.fn.system(pull_cmd)
+
+        if vim.v.shell_error ~= 0 then
+          print("Failed to pull latest changes: " .. pull_result)
+        else
+          print("Updated " .. repo_name .. " to latest " .. default_branch)
+        end
+      end
+    end
+  else
+    -- Traditional git structure
+    repo_path = base_repo_path
+
+    if vim.fn.isdirectory(repo_path) == 0 then
+      print("Repository not found locally, cloning...")
+
+      -- Clone repository
+      local clone_cmd = string.format("cd ~/code && git clone %s", clone_url)
+      local result = vim.fn.system(clone_cmd)
+
+      if vim.v.shell_error ~= 0 then
+        print("Failed to clone repository: " .. result)
+        return
+      end
+
+      print("Successfully cloned " .. repo_name)
+    else
+      -- Repository exists, update it if it's a Katlean repo or if no ref is specified
+      if is_katlean or not ref_tag then
+        -- Get current branch
+        local current_branch_cmd = string.format("cd %s && git branch --show-current", repo_path)
+        local current_branch = vim.fn.system(current_branch_cmd):gsub("%s+", "")
+
+        -- Get the default branch name
+        local default_branch_cmd = string.format(
+          "cd %s && git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'",
+          repo_path
+        )
+        default_branch = vim.fn.system(default_branch_cmd):gsub("%s+", "")
+
+        if vim.v.shell_error ~= 0 or default_branch == "" then
+          -- Fallback: assume main if we can't determine
+          if current_branch == "main" or current_branch == "master" then
+            default_branch = current_branch
+          else
+            default_branch = "main"
+          end
+        end
+
+        -- Checkout default branch if not already on it
+        if current_branch ~= default_branch then
+          local checkout_cmd = string.format("cd %s && git checkout %s", repo_path, default_branch)
+          local checkout_result = vim.fn.system(checkout_cmd)
+
+          if vim.v.shell_error ~= 0 then
+            print("Failed to checkout default branch " .. default_branch .. ": " .. checkout_result)
+            return
+          end
+        end
+
+        -- Pull latest changes
+        local pull_cmd = string.format("cd %s && git pull origin %s", repo_path, default_branch)
+        local pull_result = vim.fn.system(pull_cmd)
+
+        if vim.v.shell_error ~= 0 then
+          print("Failed to pull latest changes: " .. pull_result)
+          return
+        end
+
+        print("Updated " .. repo_name .. " to latest " .. default_branch)
+      end
     end
   end
 
-  -- Check if we need to create a worktree for a specific tag or ensure we're on default branch HEAD
+  -- Handle ref tags (create worktrees for specific refs)
   if ref_tag then
-    -- Create worktree path with format ~/code/<repo-name>-<ref-tag>
-    local worktree_path = vim.fn.expand("~/code/" .. repo_name .. "-" .. ref_tag)
+    local ref_worktree_path
 
-    -- Check if worktree already exists
-    if vim.fn.isdirectory(worktree_path) == 0 then
-      print("Creating worktree for tag: " .. ref_tag)
+    if is_worktree_structure then
+      ref_worktree_path = base_repo_path .. "/" .. ref_tag
+    else
+      ref_worktree_path = vim.fn.expand("~/code/" .. repo_name .. "-" .. ref_tag)
+    end
 
-      -- Create the worktree
-      local worktree_cmd = string.format("cd %s && git worktree add %s %s", repo_path, worktree_path, ref_tag)
+    -- Check if ref worktree already exists
+    if vim.fn.isdirectory(ref_worktree_path) == 0 then
+      print("Creating worktree for ref: " .. ref_tag)
+
+      local worktree_cmd
+      if is_worktree_structure then
+        -- For worktree structures, run git command from the default branch directory
+        -- where git commands will work properly
+        worktree_cmd = string.format("cd %s && git worktree add ../%s %s", repo_path, ref_tag, ref_tag)
+      else
+        -- For traditional repos, run from the repo directory
+        worktree_cmd = string.format("cd %s && git worktree add %s %s", repo_path, ref_worktree_path, ref_tag)
+      end
+
       local worktree_result = vim.fn.system(worktree_cmd)
 
       if vim.v.shell_error ~= 0 then
@@ -272,54 +364,8 @@ local function navigate_to_terraform_module()
       print("Successfully created worktree for " .. ref_tag)
     end
 
-    -- Update repo_path to point to the worktree
-    repo_path = worktree_path
-  else
-    -- No ref specified, ensure we're on default branch (but only update occasionally)
-    -- Get current branch
-    local current_branch_cmd = string.format("cd %s && git branch --show-current", repo_path)
-    local current_branch = vim.fn.system(current_branch_cmd):gsub("%s+", "")
-
-    -- Get the default branch name (try cached first)
-    local default_branch_cmd = string.format(
-      "cd %s && git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'",
-      repo_path
-    )
-    local default_branch = vim.fn.system(default_branch_cmd):gsub("%s+", "")
-
-    if vim.v.shell_error ~= 0 or default_branch == "" then
-      -- Fallback: check what branch we're on, assume it's the default if main/master
-      if current_branch == "main" or current_branch == "master" then
-        default_branch = current_branch
-      else
-        default_branch = "main" -- final fallback
-      end
-    end
-
-    -- Only checkout if we're not on the default branch
-    if current_branch ~= default_branch then
-      local checkout_cmd = string.format("cd %s && git checkout %s", repo_path, default_branch)
-      local checkout_result = vim.fn.system(checkout_cmd)
-
-      if vim.v.shell_error ~= 0 then
-        print("Failed to checkout default branch " .. default_branch .. ": " .. checkout_result)
-        return
-      end
-
-      print("Checked out default branch: " .. default_branch)
-    end
-
-    -- Optional: Only fetch/pull if repo is older than 1 hour (uncomment if desired)
-    -- local stat_cmd = string.format("stat -f %%m %s/.git/FETCH_HEAD 2>/dev/null || echo 0", repo_path)
-    -- local last_fetch = tonumber(vim.fn.system(stat_cmd):gsub("%s+", "")) or 0
-    -- local current_time = os.time()
-    -- if current_time - last_fetch > 3600 then -- 1 hour
-    --   local fetch_cmd = string.format("cd %s && git fetch origin", repo_path)
-    --   vim.fn.system(fetch_cmd)
-    --   local pull_cmd = string.format("cd %s && git pull origin %s", repo_path, default_branch)
-    --   vim.fn.system(pull_cmd)
-    --   print("Updated to latest " .. default_branch)
-    -- end
+    -- Update repo_path to point to the ref worktree
+    repo_path = ref_worktree_path
   end
 
   -- Build final path including module path
