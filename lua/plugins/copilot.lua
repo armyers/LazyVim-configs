@@ -4,7 +4,7 @@ return {
     enabled = true,
     config = function()
       require("copilot").setup({
-        copilot_model = "gemini-2.5-pro",
+        copilot_model = "gpt-41-copilot",
       })
     end,
   },
