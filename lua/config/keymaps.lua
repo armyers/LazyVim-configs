@@ -157,18 +157,10 @@ vim.keymap.set("n", "<leader>ms", function()
   require("lib.md-preview").sync_toggle()
 end, { desc = "[P] Toggle markdown scroll sync" })
 
-vim.keymap.set("n", "<leader>jq", "<cmd>lua require('jqscratch').toggle()<CR>", { desc = "[P] jqscratch toggle" })
-
 -- Terraform module navigation (delegates to goto-thing)
-vim.keymap.set("n", "<leader>gm", function()
-  local line = vim.api.nvim_get_current_line()
-  local source_url = line:match('source%s*=%s*"([^"]*)"')
-  if source_url then
-    require("lib.goto-thing").actions.terraform_module(source_url)
-  else
-    vim.notify("No Terraform source URL found on current line", vim.log.levels.WARN)
-  end
-end, { desc = "[P] Navigate to Terraform module (local)" })
+vim.keymap.set("n", "<leader>gt", function()
+  require("lib.goto-thing").goto_thing()
+end, { desc = "[P] Open the thing on current line" })
 
 -- Custom gf to use mini.files for directories
 vim.keymap.set("n", "gf", function()
