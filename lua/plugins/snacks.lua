@@ -12,7 +12,11 @@ return {
       },
       animate = {},
       image = {
-        float = true,
+        doc = {
+          -- disable hover/inline rendering for code blocks (mermaid, math, etc.)
+          -- to prevent empty floating windows on mermaid diagrams
+          enabled = false,
+        },
       },
       zen = {
         win = {
