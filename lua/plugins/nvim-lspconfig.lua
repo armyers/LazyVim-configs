@@ -7,36 +7,42 @@ return {
       codelens = {
         enabled = true,
       },
-    },
-    servers = {
-      groovyls = {
-        cmd = {
-          "java",
-          "-jar",
-          "~/.local/share/groovy-language-server/groovy-language-server-all.jar",
-        },
-        filetypes = {
-          "groovy",
-          "Jenkinsfile",
-        },
-      },
-      ruff = {
-        init_options = {
-          settings = {
-            configuration = "~/.config/ruff/config.toml",
+      servers = {
+        groovyls = {
+          cmd = {
+            "java",
+            "-jar",
+            "~/.local/share/groovy-language-server/groovy-language-server-all.jar",
+          },
+          filetypes = {
+            "groovy",
+            "Jenkinsfile",
           },
         },
-      },
-      terraformls = {
-        command = {
-          "terraform-ls",
-          "serve",
+        ruff = {
+          init_options = {
+            settings = {
+              configuration = "~/.config/ruff/config.toml",
+            },
+          },
         },
-        filetypes = {
-          "tf",
-          "tfvars",
-          "terraform",
+        terraformls = {
+          cmd = {
+            "terraform-ls",
+            "serve",
+          },
+          filetypes = {
+            "tf",
+            "tfvars",
+            "terraform",
+          },
         },
+        -- sourcekit-lsp ships with Xcode/Swift and is on PATH, so no cmd/mason
+        -- needed. The bundled lsp/sourcekit.lua default already sets cmd,
+        -- filetypes, capabilities and a root_dir (using the nvim 0.11+ on_dir
+        -- callback signature). Overriding root_dir with the old root_pattern()
+        -- signature breaks attach on nvim 0.12, so leave this empty.
+        sourcekit = {},
       },
     },
     -- config = function()
